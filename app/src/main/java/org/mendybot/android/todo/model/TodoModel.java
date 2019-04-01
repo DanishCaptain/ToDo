@@ -1,31 +1,33 @@
 package org.mendybot.android.todo.model;
 
-import org.mendybot.android.todo.model.domain.DummyItem;
+import org.mendybot.android.todo.model.domain.TaskType;
+import org.mendybot.android.todo.model.domain.TodoItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public final class TodoModel {
     private static TodoModel singleton;
-    private final List<DummyItem> itemsL = new ArrayList<DummyItem>();
-    private final Map<String, DummyItem> itemsM = new HashMap<String, DummyItem>();
+    private final List<TodoItem> itemsL = new ArrayList<>();
+    private final Map<UUID, TodoItem> itemsM = new HashMap<>();
     static final int COUNT = 25;
 
     private TodoModel() {
         for (int i = 1; i <= COUNT; i++) {
-            addItem(createDummyItem(i));
+            addItem(createTodoItem(i));
         }
     }
 
-    private void addItem(DummyItem item) {
+    private void addItem(TodoItem item) {
         itemsL.add(item);
-        itemsM.put(item.id, item);
+        itemsM.put(item.getId(), item);
     }
 
-    private DummyItem createDummyItem(int position) {
-        return new DummyItem(String.valueOf(position), "ToDo " + position, makeDetails(position));
+    private TodoItem createTodoItem(int position) {
+        return new TodoItem(UUID.randomUUID(), TaskType.SHOPPING, "ToDo " + position, makeDetails(position));
     }
 
     private String makeDetails(int position) {
@@ -44,11 +46,11 @@ public final class TodoModel {
         return singleton;
     }
 
-    public List<DummyItem> getItems() {
+    public List<TodoItem> getItems() {
         return itemsL;
     }
 
-    public DummyItem lookupItem(String id) {
+    public TodoItem lookupItem(String id) {
         return itemsM.get(id);
     }
 }
