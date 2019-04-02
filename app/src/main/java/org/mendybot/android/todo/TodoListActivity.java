@@ -12,10 +12,12 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.mendybot.android.todo.model.TodoModel;
-import org.mendybot.android.todo.model.domain.TodoItem;
+import org.mendybot.android.todo.model.domain.Todo;
 
 import java.util.List;
 
@@ -23,11 +25,11 @@ import java.util.List;
  * An activity representing a list of Items. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
+ * lead to a {@link TodoDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity {
+public class TodoListActivity extends AppCompatActivity {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -73,33 +75,33 @@ public class ItemListActivity extends AppCompatActivity {
     public static class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final ItemListActivity mParentActivity;
-        private final List<TodoItem> mValues;
+        private final TodoListActivity mParentActivity;
+        private final List<Todo> mValues;
         private final boolean mTwoPane;
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TodoItem item = (TodoItem) view.getTag();
+                Todo item = (Todo) view.getTag();
                 if (mTwoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, item.getId().toString());
-                    ItemDetailFragment fragment = new ItemDetailFragment();
+                    arguments.putString(TodoDetailFragment.ARG_ITEM_ID, item.getId().toString());
+                    TodoDetailFragment fragment = new TodoDetailFragment();
                     fragment.setArguments(arguments);
                     mParentActivity.getSupportFragmentManager().beginTransaction()
                             .replace(R.id.item_detail_container, fragment)
                             .commit();
                 } else {
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, item.getId());
+                    Intent intent = new Intent(context, TodoDetailActivity.class);
+                    intent.putExtra(TodoDetailFragment.ARG_ITEM_ID, item.getId().toString());
 
                     context.startActivity(intent);
                 }
             }
         };
 
-        SimpleItemRecyclerViewAdapter(ItemListActivity parent,
-                                      List<TodoItem> items,
+        SimpleItemRecyclerViewAdapter(TodoListActivity parent,
+                                      List<Todo> items,
                                       boolean twoPane) {
             mValues = items;
             mParentActivity = parent;
@@ -108,17 +110,26 @@ public class ItemListActivity extends AppCompatActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_content, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.todo_list_content, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mTaskTypeView.setText(mValues.get(position).getTaskType().toString());
-            holder.mTaskView.setText(mValues.get(position).getTask());
+            Todo current = mValues.get(position);
+            holder.mTaskTypeView.setText(current.getTodoType().getShortName());
+            String fill;
+            holder.mTaskView.setText(current.getTask());
+            String status;
+            if (current.isCompleted()) {
+                status = "[*]";
+            } else {
+                status = "[ ]";
+            }
+//            holder.mTaskStatusView.setText(status);
+            holder.mTaskStatusView.setChecked(current.isCompleted());
 
-            holder.itemView.setTag(mValues.get(position));
+            holder.itemView.setTag(current);
             holder.itemView.setOnClickListener(mOnClickListener);
         }
 
@@ -130,11 +141,13 @@ public class ItemListActivity extends AppCompatActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mTaskTypeView;
             final TextView mTaskView;
+            final CheckBox mTaskStatusView;
 
             ViewHolder(View view) {
                 super(view);
                 mTaskTypeView = (TextView) view.findViewById(R.id.task_type);
                 mTaskView = (TextView) view.findViewById(R.id.task);
+                mTaskStatusView = (CheckBox) view.findViewById(R.id.status_view);
             }
         }
     }
