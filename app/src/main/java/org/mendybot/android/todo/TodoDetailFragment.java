@@ -2,6 +2,8 @@ package org.mendybot.android.todo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,11 +19,19 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
+import org.mendybot.android.todo.ads.model.AdHandler;
+import org.mendybot.android.todo.ads.model.AdsModel;
 import org.mendybot.android.todo.model.TodoModel;
 import org.mendybot.android.todo.model.domain.Todo;
 import org.mendybot.android.todo.model.domain.TodoType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import static org.mendybot.android.todo.R.id.item_todo_type_spin;
 
@@ -70,6 +80,7 @@ public class TodoDetailFragment
                 appBarLayout.setTitle(mItem.getTask());
             }
         }
+//        AdsModel.getInstance().init(getActivity());
 
     }
 
@@ -179,6 +190,22 @@ public class TodoDetailFragment
             bSave.setOnClickListener(this);
             Button bDelete = rootView.findViewById(R.id.delete_item);
             bDelete.setOnClickListener(this);
+
+
+            final ImageView adView = rootView.findViewById(R.id.ad_2112_1);
+            AdHandler handler = new AdHandler() {
+                @Override
+                public Activity getActivity() {
+                    return TodoDetailFragment.this.getActivity();
+                }
+
+                @Override
+                public ImageView getView() {
+                    return adView;
+
+                }
+            };
+            AdsModel.getInstance().add(handler);
         }
 
         return rootView;
