@@ -30,15 +30,23 @@ public final class TodoModel {
     private TodoModel() {
     }
 
-    private void addItem(Todo item) {
+    public void addItem(Todo item) {
         itemsL.add(item);
         itemsM.put(item.getId(), item);
     }
 
+    public void deleteItem(Todo item) {
+        itemsL.remove(item);
+        itemsM.remove(item.getId());
+    }
+
+    /*
     private Todo createTodoItem(int position) {
         return new Todo(UUID.randomUUID(), TodoType.SHOPPING, "ToDo " + position, makeDetails(position));
     }
+    */
 
+    /*
     private String makeDetails(int position) {
         StringBuilder builder = new StringBuilder();
         builder.append("Details about Item: ").append(position);
@@ -47,6 +55,7 @@ public final class TodoModel {
         }
         return builder.toString();
     }
+    */
 
     public List<Todo> getItems() {
         return itemsL;
@@ -87,15 +96,25 @@ public final class TodoModel {
             }
 
         } catch (FileNotFoundException e) {
+            /*
             for (int i = 1; i <= COUNT; i++) {
                 addItem(createTodoItem(i));
             }
             dumpToStore();
+            */
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
             app.deleteFile("ToDo.dat");
         }
+    }
+
+    public void save() {
+        dumpToStore();
+    }
+
+    public void save(Todo todo) {
+        dumpToStore();
     }
 
     private void dumpToStore() {

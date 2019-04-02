@@ -1,5 +1,6 @@
 package org.mendybot.android.todo;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import org.mendybot.android.todo.model.TodoModel;
@@ -50,8 +49,10 @@ public class TodoListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                handleTheNew(getApplicationContext());
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
 
@@ -66,6 +67,16 @@ public class TodoListActivity extends AppCompatActivity {
         View recyclerView = findViewById(R.id.item_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
+    }
+
+    public static void handleTheNew(Context context) {
+        Todo item = new Todo();
+        TodoModel.getInstance().addItem(item);
+        TodoModel.getInstance().save();
+        Intent intent = new Intent(context, TodoDetailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+        intent.putExtra(TodoDetailFragment.ARG_ITEM_ID, item.getId().toString());
+        context.startActivity(intent);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

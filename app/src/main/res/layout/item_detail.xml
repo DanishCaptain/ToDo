@@ -8,6 +8,48 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <EditText
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/item_task_edit"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            tools:context=".TodoDetailFragment" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task Type:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <Spinner
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/item_todo_type_spin"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false"
+            tools:context=".TodoDetailFragment" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -35,13 +77,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_margin="@dimen/text_margin"
             android:text="Priority:"
             android:textSize="18sp"
             android:textStyle="bold" />
-
-        <TextView
+        <EditText
             android:id="@+id/item_priority"
             style="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
@@ -74,6 +113,25 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/save_item"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="save"
+            />
+        <Button
+            android:id="@+id/delete_item"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="delete"
+            />
     </LinearLayout>
 
     <TextView

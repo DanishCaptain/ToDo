@@ -1,7 +1,7 @@
 package org.mendybot.android.todo.model.domain;
 
 public enum TodoType {
-    SHOPPING("S");
+    ERRAND("E"), SHOPPING("S");
 
     private final String shortName;
 

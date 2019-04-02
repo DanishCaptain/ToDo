@@ -10,6 +10,10 @@ public class Todo {
     private int priority = 50;
     private boolean completed = false;
 
+    public Todo() {
+        this(UUID.randomUUID(), TodoType.SHOPPING, "new task", "");
+    }
+
     public Todo(UUID id, TodoType todoType, String task, String details) {
         this.id = id;
         this.todoType = todoType;

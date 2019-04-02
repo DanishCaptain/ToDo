@@ -1,7 +1,7 @@
 package org.mendybot.android.todo;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,13 +11,19 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import org.mendybot.android.todo.model.TodoModel;
 import org.mendybot.android.todo.model.domain.Todo;
+import org.mendybot.android.todo.model.domain.TodoType;
+
+import static org.mendybot.android.todo.R.id.item_todo_type_spin;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -25,7 +31,9 @@ import org.mendybot.android.todo.model.domain.Todo;
  * in two-pane mode (on tablets) or a {@link TodoDetailActivity}
  * on handsets.
  */
-public class TodoDetailFragment extends Fragment implements TextWatcher, CompoundButton.OnCheckedChangeListener {
+public class TodoDetailFragment
+        extends Fragment
+        implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -62,6 +70,7 @@ public class TodoDetailFragment extends Fragment implements TextWatcher, Compoun
                 appBarLayout.setTitle(mItem.getTask());
             }
         }
+
     }
 
     @Override
@@ -70,43 +79,147 @@ public class TodoDetailFragment extends Fragment implements TextWatcher, Compoun
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
 
         if (mItem != null) {
-            EditText edit = rootView.findViewById(R.id.item_detail_edit);
-            edit.setText(mItem.getDetails());
-            edit.addTextChangedListener(this);
+            EditText editTask = rootView.findViewById(R.id.item_task_edit);
+            editTask.setText(mItem.getTask());
+            editTask.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                    mItem.setTask(s.toString());
+//                    TodoModel.getInstance().save(mItem);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+
+//            Spinner spinTaskType = rootView.findViewById(R.id.item_todo_type_spin);
+//            spinTaskType.setAdapter(new ArrayAdapter<TodoType>(getContext(), R.layout.item_detail, TodoType.values()));
+            Spinner spinTaskType =rootView.findViewById(R.id.item_todo_type_spin);
+            spinTaskType.setAdapter(new ArrayAdapter<TodoType>(getContext(), android.R.layout.simple_spinner_item, TodoType.values()));
+            spinTaskType.setSelection(mItem.getTodoType().ordinal());
+            spinTaskType.setOnItemSelectedListener(this);
+
+
+
+
+//            spinTaskType.setText(mItem.getTodoType().toString());
+            /*
+            spinTaskType.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                    mItem.setTodoType(TodoType.valueOf(s.toString()));
+//                    TodoModel.getInstance().save(mItem);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+            */
+
+            EditText editDetail = rootView.findViewById(R.id.item_detail_edit);
+            editDetail.setText(mItem.getDetails());
+            editDetail.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                    mItem.setDetails(s.toString());
+//                    TodoModel.getInstance().save(mItem);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+
+            EditText editPriority = rootView.findViewById(R.id.item_priority);
+            editPriority.setText(Integer.toString(mItem.getPriority()));
+            editPriority.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+                    int old = mItem.getPriority();
+                    try {
+                        mItem.setPriority(Integer.parseInt(s.toString()));
+//                        TodoModel.getInstance().save(mItem);
+                    } catch (Exception ex) {
+                        mItem.setPriority(old);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
 
             CheckBox cb = rootView.findViewById(R.id.item_edit_completed);
             cb.setChecked(mItem.isCompleted());
             cb.setOnCheckedChangeListener(this);
+
+            Button bSave = rootView.findViewById(R.id.save_item);
+            bSave.setOnClickListener(this);
+            Button bDelete = rootView.findViewById(R.id.delete_item);
+            bDelete.setOnClickListener(this);
         }
 
         return rootView;
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        mItem.setDetails(s.toString());
-    }
-
-
-
-    @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         FragmentActivity a = getActivity();
-        System.out.println(a);
         CheckBox cb1 = this.getActivity().findViewById(R.id.item_edit_completed);
         if (cb1 == buttonView) {
             mItem.setCompleted(isChecked);
-//            this.getActivity().findViewById(R.id.item_list).invalidate();
-//            this.getActivity().findViewById(R.id.item_list).setBackgroundColor(Color.RED);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        FragmentActivity a = getActivity();
+        if (view == a.findViewById(R.id.save_item)) {
+            if (mItem != null) {
+                TodoModel.getInstance().save(mItem);
+            }
+        } else if (view == a.findViewById(R.id.delete_item)) {
+            if (mItem != null) {
+                TodoModel.getInstance().deleteItem(mItem);
+                TodoModel.getInstance().save();
+                getActivity().navigateUpTo(new Intent(getActivity(), TodoListActivity.class));
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView == getActivity().findViewById(R.id.item_todo_type_spin)) {
+            if (mItem != null) {
+                mItem.setTodoType((TodoType) ((Spinner)adapterView).getSelectedItem());
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
