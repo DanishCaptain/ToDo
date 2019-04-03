@@ -22,6 +22,7 @@ public final class LocationModel {
     private double latitude;
     private String country;
     private String city;
+    private String userAgent;
 
     private LocationModel() {
     }
@@ -60,10 +61,12 @@ public final class LocationModel {
                     e.printStackTrace();
                 }
             }
+        } catch(SecurityException t) {
+            // need access
         } catch(Throwable t) {
             System.out.println(t.getMessage());
         }
-
+        userAgent = System.getProperty("http.agent");
 
     }
 

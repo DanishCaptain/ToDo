@@ -1,9 +1,11 @@
 package org.mendybot.android.todo.ads.model;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,11 @@ public final class AdsModel implements Runnable{
 
     public void init(Activity activity) {
         this.activity = activity;
+
+        //SharedPreferences sp = activity.getSharedPreferences("FS_ADS", Context.MODE_PRIVATE);
+        //int oink = sp.getInt("TEST_OINK", 22);
+        //sp.edit().putInt("TEST_OINK", 100).commit();
+
         if (!running) {
             t.setDaemon(true);
             t.setName("AdsModel");
@@ -56,7 +63,7 @@ public final class AdsModel implements Runnable{
 
                 try {
                     Activity a = handler.getActivity();
-                    final ImageView i = handler.getView();
+                    final ImageButton i = (ImageButton) handler.getView();
                     String imageUrl = "https://www.survivalkit.com/blog/wp-content/uploads/2015/12/shutterstock_180365039-300x200.jpg";
 //                    String imageUrl = "<image src='http://www.survivalkit.com/blog/wp-content/uploads/2015/12/shutterstock_180365039-300x200.jpg'>";
                     final Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL(imageUrl).getContent());
@@ -66,6 +73,9 @@ public final class AdsModel implements Runnable{
                             i.setImageBitmap(bitmap);
                         }
                     });
+
+//                    ImageButton ib = new ImageButton(a);
+//                    ib.setImageBitmap(bitmap);
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

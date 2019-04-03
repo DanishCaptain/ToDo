@@ -24,6 +24,7 @@ import android.widget.Spinner;
 
 import org.mendybot.android.todo.ads.model.AdHandler;
 import org.mendybot.android.todo.ads.model.AdsModel;
+import org.mendybot.android.todo.ads.model.ModelException;
 import org.mendybot.android.todo.model.TodoModel;
 import org.mendybot.android.todo.model.domain.Todo;
 import org.mendybot.android.todo.model.domain.TodoType;
@@ -225,13 +226,23 @@ public class TodoDetailFragment
         FragmentActivity a = getActivity();
         if (view == a.findViewById(R.id.save_item)) {
             if (mItem != null) {
-                TodoModel.getInstance().save(mItem);
+                try {
+                    TodoModel.getInstance().save(mItem);
+                } catch (ModelException e) {
+                    e.printStackTrace();
+                    //TODO: add error message display
+                }
             }
         } else if (view == a.findViewById(R.id.delete_item)) {
             if (mItem != null) {
                 TodoModel.getInstance().deleteItem(mItem);
-                TodoModel.getInstance().save();
-                getActivity().navigateUpTo(new Intent(getActivity(), TodoListActivity.class));
+                try {
+                    TodoModel.getInstance().save();
+                    getActivity().navigateUpTo(new Intent(getActivity(), TodoListActivity.class));
+                } catch (ModelException e) {
+                    e.printStackTrace();
+                    //TODO: add error message display
+                }
             }
         }
     }

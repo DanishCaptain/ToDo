@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import org.mendybot.android.todo.ads.model.AdsModel;
+import org.mendybot.android.todo.ads.model.ModelException;
 import org.mendybot.android.todo.model.LocationModel;
 import org.mendybot.android.todo.model.TodoModel;
 import org.mendybot.android.todo.model.domain.Todo;
@@ -45,7 +46,12 @@ public class TodoListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
         LocationModel.getInstance().init(this);
-        TodoModel.getInstance().init(this);
+        try {
+            TodoModel.getInstance().init(this);
+        } catch (ModelException e) {
+            e.printStackTrace();
+            //TODO: add error messages
+        }
         AdsModel.getInstance().init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -57,7 +63,12 @@ public class TodoListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                handleTheNew(getApplicationContext());
+                try {
+                    handleTheNew(getApplicationContext());
+                } catch (ModelException e) {
+                    e.printStackTrace();
+                    //TODO: add error messages
+                }
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -76,7 +87,7 @@ public class TodoListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
-    public static void handleTheNew(Context context) {
+    public static void handleTheNew(Context context) throws ModelException {
         Todo item = new Todo();
         TodoModel.getInstance().addItem(item);
         TodoModel.getInstance().save();
