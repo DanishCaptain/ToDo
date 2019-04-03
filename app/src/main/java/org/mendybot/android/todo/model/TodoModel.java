@@ -1,8 +1,8 @@
 package org.mendybot.android.todo.model;
 
+import android.app.Activity;
 import android.content.Context;
 
-import org.mendybot.android.todo.TodoApplication;
 import org.mendybot.android.todo.model.domain.TodoType;
 import org.mendybot.android.todo.model.domain.Todo;
 
@@ -25,7 +25,7 @@ public final class TodoModel {
     private final List<Todo> itemsL = new ArrayList<>();
     private final Map<UUID, Todo> itemsM = new HashMap<>();
     static final int COUNT = 25;
-    private TodoApplication app;
+    private Activity activity;
 
     private TodoModel() {
     }
@@ -69,10 +69,10 @@ public final class TodoModel {
         return itemsM.get(uuid);
     }
 
-    public void init(TodoApplication app) {
-        this.app = app;
+    public void init(Activity activity) {
+        this.activity = activity;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(app.openFileInput("ToDo.dat")));
+            BufferedReader br = new BufferedReader(new InputStreamReader(activity.openFileInput("ToDo.dat")));
             String line;
             if (br != null) {
                 while ((line = br.readLine()) != null) {
@@ -91,7 +91,7 @@ public final class TodoModel {
                 }
                 br.close();
                 if (itemsL.size() == 0) {
-                    app.deleteFile("ToDo.dat");
+                    activity.deleteFile("ToDo.dat");
                 }
             }
 
@@ -105,7 +105,7 @@ public final class TodoModel {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (Exception e) {
-            app.deleteFile("ToDo.dat");
+            activity.deleteFile("ToDo.dat");
         }
     }
 
@@ -118,9 +118,9 @@ public final class TodoModel {
     }
 
     private void dumpToStore() {
-        if (app != null) {
+        if (activity != null) {
             try {
-                PrintWriter pw = new PrintWriter(app.openFileOutput("ToDo.dat", Context.MODE_PRIVATE));
+                PrintWriter pw = new PrintWriter(activity.openFileOutput("ToDo.dat", Context.MODE_PRIVATE));
                 for (Todo item : itemsL) {
                     StringBuffer sb = new StringBuffer();
                     sb.append(TOKEN);

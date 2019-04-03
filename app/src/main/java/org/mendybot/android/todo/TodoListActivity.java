@@ -1,10 +1,12 @@
 package org.mendybot.android.todo;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import org.mendybot.android.todo.ads.model.AdsModel;
+import org.mendybot.android.todo.model.LocationModel;
 import org.mendybot.android.todo.model.TodoModel;
 import org.mendybot.android.todo.model.domain.Todo;
 
@@ -40,6 +44,9 @@ public class TodoListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+        LocationModel.getInstance().init(this);
+        TodoModel.getInstance().init(this);
+        AdsModel.getInstance().init(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

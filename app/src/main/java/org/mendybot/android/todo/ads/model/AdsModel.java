@@ -1,14 +1,9 @@
 package org.mendybot.android.todo.ads.model;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
-
-import org.mendybot.android.todo.R;
-import org.mendybot.android.todo.ads.model.domain.BannerAdRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,14 +16,14 @@ public final class AdsModel implements Runnable{
     private PriorityQueue<AdHandler> queue = new PriorityQueue<>();
     private Thread t = new Thread(this);
     private boolean running;
-    private Context context;
+    private Activity activity;
     //https://www.survivalkit.com/blog/wp-content/uploads/2015/12/shutterstock_180365039-300x200.jpg
 
     private AdsModel() {
     }
 
-    public void init(Context context) {
-        this.context = context;
+    public void init(Activity activity) {
+        this.activity = activity;
         if (!running) {
             t.setDaemon(true);
             t.setName("AdsModel");
